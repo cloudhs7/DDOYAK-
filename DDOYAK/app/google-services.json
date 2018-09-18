@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "226018311893",
+    "firebase_url": "https://ddoyak-362cb.firebaseio.com",
+    "project_id": "ddoyak-362cb",
+    "storage_bucket": "ddoyak-362cb.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:226018311893:android:384c8edd6f4ec905",
+        "android_client_info": {
+          "package_name": "com.example.caucse.ddoyak"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "226018311893-fijhhnrgo09a5k14r4r7uibjmqrs7mo9.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.caucse.ddoyak",
+            "certificate_hash": "4b8294abbe81ffe9ce27345e5b24ecdc9bace211"
+          }
+        },
+        {
+          "client_id": "226018311893-j55lgts3i3kqv6fe68gdsd27rq4mkc0l.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDHax8vLqDUY9GNY4yGjYfdJqeB3oJUtGA"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "226018311893-j55lgts3i3kqv6fe68gdsd27rq4mkc0l.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

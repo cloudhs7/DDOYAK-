@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".CalendarMainActivity"
+    android:backgroundTint="#bc8f8f">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/colorPrimaryDark">
+
+        <Button
+            android:layout_width="70dp"
+            android:layout_height="45dp"
+            android:id = "@+id/prev_btn"
+            android:textAlignment="gravity"
+            android:textSize="14dp"
+            android:text="Prev"
+            android:textColor="#cd5c5c"
+            android:layout_alignParentLeft="true"
+            android:gravity="center"/>
+
+        <TextView
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:id = "@+id/month_tv"
+            android:textSize="24dp"
+            android:text="MonthView"
+            android:textStyle="bold"
+            android:textColor="#cd5c5c"
+            android:layout_centerInParent="true"/>
+
+        <Button
+            android:layout_width="70dp"
+            android:layout_height="45dp"
+            android:id = "@+id/next_btn"
+            android:textAlignment="gravity"
+            android:textSize="14dp"
+            android:text="NEXT"
+            android:textColor="@color/colorPrimaryDark"
+            android:gravity="center"
+            android:layout_alignParentRight="true"/>
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <com.example.caucse.ddoyak.GridView
+            android:id="@+id/gridView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:verticalSpacing="1dp"
+            android:horizontalSpacing="1dp"
+            android:listSelector="#e9967a"
+            android:stretchMode="columnWidth"/>
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/checking_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scrollbars="vertical" />
+
+    </LinearLayout>
+
+</LinearLayout>

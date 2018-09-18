@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#ffffff">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center_vertical"
+        android:foregroundGravity="center">
+
+        <LinearLayout
+            android:id="@+id/linear1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:orientation="vertical">
+
+                <ImageButton
+                    android:id="@+id/alarm"
+                    android:layout_width="130dp"
+                    android:layout_height="130dp"
+                    android:padding="5dp"
+                    android:scaleType="centerCrop"
+                    android:rotation="90"
+                    android:background="@drawable/home_button2selector"
+                    app:srcCompat="@drawable/button2"/>
+
+                <ImageButton
+                    android:id="@+id/schedule"
+                    android:layout_width="126dp"
+                    android:layout_height="125dp"
+                    android:padding="5dp"
+                    android:layout_marginTop="10dp"
+                    android:scaleType="centerCrop"
+                    android:background="@drawable/home_button3selector"
+                    app:srcCompat="@drawable/button3" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:orientation="vertical">
+
+                <ImageButton
+                    android:id="@+id/take"
+                    android:layout_width="130dp"
+                    android:layout_height="130dp"
+                    android:layout_alignTop="@+id/alarm"
+                    android:background="@drawable/home_button1selector"
+                    android:padding="5dp"
+                    android:scaleType="centerCrop"
+                    android:rotation="180"
+                    app:srcCompat="@drawable/button1" />
+
+                <ImageButton
+                    android:id="@+id/chicken"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignTop="@+id/schedule"
+                    android:layout_marginTop="5dp"
+                    android:layout_gravity="center"
+                    android:background="@android:color/transparent"
+                    android:scaleType="centerCrop"
+                    app:srcCompat="@drawable/chicken" />
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</RelativeLayout>
