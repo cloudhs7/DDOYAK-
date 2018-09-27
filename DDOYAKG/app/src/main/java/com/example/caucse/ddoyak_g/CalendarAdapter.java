@@ -5,18 +5,31 @@ import android.graphics.Color;
 import android.text.format.Time;
 import android.util.AttributeSet;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import java.util.Calendar;
 
 public class CalendarAdapter extends BaseAdapter {
 
-    public static final String TAG = "CalendarMonthAdapter";
-
     Context mContext;
+    LinearLayout linear1;   // 복용 circle, 미복용 triangle 표시하기 위한 레이아웃
+    TextView tv;    //일 표시 tv
+    String packName;
+
+    String medicine_taken = "takencircle";
+    String medicine_not_taken = "nottaken";
+    public int taken_resID;
+    public int nottaken_resID;
+
+    int layout;
+    LayoutInflater inflater;
 
     private MonthItem[] items;
     private int countColumn = 7;
@@ -28,6 +41,7 @@ public class CalendarAdapter extends BaseAdapter {
     int startDay;
 
     Calendar mCalendar;
+    private int selectedPosition = -1;  //selectedPosition 초기화
 
     public CalendarAdapter(Context context) {
         super();
@@ -35,9 +49,10 @@ public class CalendarAdapter extends BaseAdapter {
         init();
     }
 
-    public CalendarAdapter(Context context, AttributeSet attrs) {
-        super();
+    public CalendarAdapter(Context context, int layout) {
         mContext = context;
+        this.layout = layout;
+        inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         init();
     }
 
@@ -140,6 +155,56 @@ public class CalendarAdapter extends BaseAdapter {
         }
     }
 
+    //복용(circle) 미복용(triangle) 여부를 날마다 그림으로 표시
+    public void UpdateImageonCalendar(int position) {
+        MonthItem item = (MonthItem) ShowPatientInfo.monthViewAdapter.getItem(position);
+        int curDay = item.getDay();
+        //drawble로부터 circle, triangle 이미지 얻어오기
+        taken_resID = mContext.getResources().getIdentifier(medicine_taken, "drawable", packName);
+        nottaken_resID = mContext.getResources().getIdentifier(medicine_not_taken, "drawable", packName);
+        packName = mContext.getPackageName();
+
+        //set circle image
+        ImageView takenimage = new ImageView(mContext);
+        takenimage.setImageResource(taken_resID);
+        takenimage.setAdjustViewBounds(true);
+
+        //set triangle image
+        ImageView nottakenimage = new ImageView(mContext);
+        nottakenimage.setImageResource(nottaken_resID);
+        nottakenimage.setAdjustViewBounds(true);
+
+        linear1.removeAllViews();
+
+        for (int i = 0; i < ShowPatientInfo.data.size(); i++) {
+            //해당 날짜의 복용&미복용 데이터 얻어오기
+            if ((Integer.parseInt(ShowPatientInfo.data.get(i).getYear()) == curYear)
+                    && (Integer.parseInt(ShowPatientInfo.data.get(i).getMonth()) == (curMonth) + 1)
+                    && (Integer.parseInt(ShowPatientInfo.data.get(i).getDay()) == curDay)) {
+                if (Integer.parseInt(ShowPatientInfo.data.get(i).getCheck()) == 1){
+                    //checkingValue가 1이면 linear1.addView를 통한 circle 이미지 띄우기
+                    item.setCheckingValue(1);//복용
+
+                    linear1.addView(takenimage, 25, 25);}
+                else if (Integer.parseInt(ShowPatientInfo.data.get(i).getCheck()) == 0){
+                    //checkingValue가 0이면 linear1.addView를 통한 triangle 이미지 띄우기
+                    item.setCheckingValue(0);//미복용
+                    linear1.addView(nottakenimage, 25, 25);}
+                else
+                    item.setCheckingValue(2);
+            }
+        }
+    }
+
+    public void setItem(MonthItem item) {
+        int day = item.getDay();
+        if (day != 0) {
+            tv.setText(String.valueOf(day));
+        } else {
+            tv.setText(String.valueOf(item.getOverValue()));
+        }
+    }
+
     @Override
     public int getCount() {
         return 7*6;
@@ -157,51 +222,66 @@ public class CalendarAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        MonthItemView itemView;
-        if(convertView ==null){
-            itemView = new MonthItemView(mContext);
-        }else{
-            itemView = (MonthItemView) convertView;
+
+        //view가 최종적으로 띄울 MonthItemView
+        if (convertView == null) {
+            convertView = inflater.inflate(layout, null);
         }
 
-        GridView.LayoutParams params = new GridView.LayoutParams(GridView.LayoutParams.MATCH_PARENT,160);
+        tv = (TextView) convertView.findViewById(R.id.day_num);    //몇일인지 띄울 textview
+        linear1 = (LinearLayout) convertView.findViewById(R.id.linear1);   //복용 미복용 이미지 띄울 linearlayout
 
-        int rowIndex = position/countColumn;
-        int columnIndex = position%countColumn;
+        int columnIndex = position % countColumn;
 
-        itemView.setItem(items[position]);
-        itemView.setLayoutParams(params);
-        itemView.setPadding(2,2,2,2);
+        setItem(items[position]);   //일별 날짜 및 색 지정
+        UpdateImageonCalendar(position);    // 복용 현황 이미지들 지정
 
-        itemView.setGravity(Gravity.LEFT);
-        if(columnIndex==0){
-            itemView.setTextColor(Color.RED);
-        } else if(columnIndex==6){
-            itemView.setTextColor(Color.BLUE);
-        } else{
-            itemView.setTextColor(Color.BLACK);
+        GridView.LayoutParams params = new GridView.LayoutParams(GridView.LayoutParams.MATCH_PARENT, 160);
+        convertView.setLayoutParams(params);
+        convertView.setPadding(2, 2, 2, 2);
+
+        tv.setGravity(Gravity.LEFT);
+        //요일에 따른 색 지정
+        if (columnIndex == 0) {
+            tv.setTextColor(Color.RED);
+        } else if (columnIndex == 6) {
+            tv.setTextColor(Color.BLUE);
+        } else {
+            tv.setTextColor(Color.BLACK);
         }
 
-        if(items[position].getDay()==0){
-            itemView.setBackgroundColor(Color.LTGRAY);
-            itemView.setTextColor(Color.BLACK);
-        } else{
-            itemView.setBackgroundColor(Color.WHITE);
+        //클릭했을 때 색 지정
+        if (position == getSelectedPosition()) {
+            convertView.setBackgroundColor(Color.rgb(242, 203, 97));
+        } else if (items[position].getDay() == 0) {
+            convertView.setBackgroundColor(Color.rgb(238, 229, 222));
+        } else {
+            convertView.setBackgroundColor(Color.WHITE);
         }
 
-        return itemView;
+        return convertView;
     }
 
     public void setPreviousMonth(){
         mCalendar.add(Calendar.MONTH,-1);
         recalculate();
         resetDayNumbers();
+        selectedPosition = -1;
     }
 
     public void setNextMonth(){
         mCalendar.add(Calendar.MONTH,1);
         recalculate();
         resetDayNumbers();
+        selectedPosition = -1;
+    }
+
+    public void setSelectedPosition(int selectedPosition) {
+        this.selectedPosition = selectedPosition;
+    }
+
+    public int getSelectedPosition() {
+        return selectedPosition;
     }
 
     public int getCurYear(){

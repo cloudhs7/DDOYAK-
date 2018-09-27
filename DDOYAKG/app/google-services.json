@@ -127,6 +127,14 @@
           }
         },
         {
+          "client_id": "226018311893-5987meclgh0kqaao0k13r0afdqrpttvu.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.caucse.ddoyak_g",
+            "certificate_hash": "e85c02f966e0803d7b5c6cc8a9e05073b573283a"
+          }
+        },
+        {
           "client_id": "226018311893-j55lgts3i3kqv6fe68gdsd27rq4mkc0l.apps.googleusercontent.com",
           "client_type": 3
         }

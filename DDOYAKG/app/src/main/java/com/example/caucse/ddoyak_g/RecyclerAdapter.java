@@ -37,6 +37,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 public void onClick(View v) {
                     Toast.makeText(sContext,"click "+patientInfoArrayList.get(getAdapterPosition()).getName(),Toast.LENGTH_SHORT).show();
                     Intent intent = new Intent(v.getContext(),ShowPatientInfo.class);
+                    intent.addFlags(intent.FLAG_ACTIVITY_NEW_TASK);
                     intent.putExtra("patientname",patientInfoArrayList.get(getAdapterPosition()).getName());
                     intent.putExtra("patientphone",patientInfoArrayList.get(getAdapterPosition()).getPhoneNumber());
                     try {

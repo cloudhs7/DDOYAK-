@@ -4,19 +4,44 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.ArrayList;
+import java.util.StringTokenizer;
+
 
 public class ShowPatientInfo extends AppCompatActivity {
+
     CalendarView monthView;
-    CalendarAdapter monthViewAdapter;
+    public static CalendarAdapter monthViewAdapter;
     TextView monthText;
 
     int curYear;
     int curMonth;
+    int curDay;
+    int count = 0;
+
+    CheckingAdapter adapter;
+
+    RecyclerView checkingView;
+    RecyclerView.LayoutManager layoutManager;
+    public static ArrayList<History> data = new ArrayList<>();
+    ArrayList<History> checkingData = new ArrayList<>();
+
+    private FirebaseDatabase database = FirebaseDatabase.getInstance();
+    private DatabaseReference myRef = database.getReference("HISTORY");
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,11 +65,61 @@ public class ShowPatientInfo extends AppCompatActivity {
 
         });
 
+        checkingView = (RecyclerView) findViewById(R.id.checking_view);
+        checkingView.setHasFixedSize(true);
+        layoutManager = new LinearLayoutManager(this);
+        checkingView.setLayoutManager(layoutManager);
 
+        adapter = new CheckingAdapter(getApplicationContext(), checkingData);
+
+        //data 모두 삭제
+        data.clear();
+
+        myRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                count=0;
+
+                //History reference 에 해당되는 data 모두 받아오기
+                for(DataSnapshot historyData : dataSnapshot.getChildren()){
+                    String history = historyData.getValue().toString(); //String 형식으로 하나하나 data 받아오기
+                    StringTokenizer st = new StringTokenizer(history,"#");
+                    String year, month, day, hour, min, check, name;
+
+                    //token #으로 구분된 data 가공하기
+                    year = st.nextToken();
+                    month=st.nextToken();
+                    day = st.nextToken();
+                    hour = st.nextToken();
+                    min = st.nextToken();
+                    check = st.nextToken();
+                    name = st.nextToken();
+
+                    //data에 History class 형식으로 add
+                    data.add(new History(year, month, day, hour, min, check, name));
+                    count++;
+                }
+                adapter.notifyDataSetChanged();
+                monthViewAdapter.notifyDataSetChanged();
+                monthView.setAdapter(monthViewAdapter);
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
 
         monthView = (CalendarView) findViewById(R.id.monthView);
-        monthViewAdapter = new CalendarAdapter(this);
+        monthViewAdapter = new CalendarAdapter(getApplicationContext(), R.layout.month_item);
         monthView.setAdapter(monthViewAdapter);
+
+        //CalendarView item 클릭 시 실행
+        monthView.setOnDataSelectionListener(new OnDataSelectionListener() {
+            @Override
+            public void onDataSelected(AdapterView parent, View v, int position, long id) {
+                UpdateAdapter(position);
+            }
+        });
 
         monthText = (TextView)findViewById(R.id.monthText);
         setMonthText();
@@ -54,7 +129,6 @@ public class ShowPatientInfo extends AppCompatActivity {
         monthPrevious.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // TODO Auto-generated method stub
                 monthViewAdapter.setPreviousMonth();
                 monthViewAdapter.notifyDataSetChanged();
                 setMonthText();
@@ -66,7 +140,6 @@ public class ShowPatientInfo extends AppCompatActivity {
         monthNext.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // TODO Auto-generated method stub
                 monthViewAdapter.setNextMonth();
                 monthViewAdapter.notifyDataSetChanged();
                 setMonthText();
@@ -83,6 +156,21 @@ public class ShowPatientInfo extends AppCompatActivity {
         monthText.setText(curYear + "년 " + (curMonth+1) + "월");
     }
 
+    //gridView Adapter Update
+    public void UpdateAdapter(int position){
+        MonthItem item = (MonthItem) monthViewAdapter.getItem(position);
+        curDay = item.getDay();
+        checkingData.clear();
+        //해당 년월일에 맞는 복용여부 data add
+        for(int i=0;i<count;i++) {
+            if (Integer.parseInt(data.get(i).getYear()) == curYear)
+                if (Integer.parseInt(data.get(i).getMonth()) == (curMonth) + 1)
+                    if (Integer.parseInt(data.get(i).getDay()) == curDay)
+                        checkingData.add(data.get(i));
+        }
 
+        //adapter set
+        checkingView.setAdapter(adapter);
+    }
 
 }

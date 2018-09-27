@@ -4,6 +4,7 @@ package com.example.caucse.ddoyak_g;
 public class MonthItem {
     private int dayValue;
     private int overValue;
+    private int checkingValue;//checkingvalue의 디폴트는 2로 놔서 아무 checking 도 안뜨게 한다. (해당 달의 날짜가 아니면)
 
     public MonthItem(){ }
 
@@ -18,6 +19,14 @@ public class MonthItem {
 
     public int getOverValue(){
         return overValue;
+    }
+
+    public int getCheckingValue(){
+        return checkingValue;
+    }
+
+    public void setCheckingValue(int checkingValue){
+        this.checkingValue = checkingValue;
     }
 
     public void setDay(int dayValue){
