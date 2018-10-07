@@ -32,7 +32,7 @@ public class MedicineList extends AppCompatActivity {
     ArrayList<String> temp = new ArrayList<>();
 
     private FirebaseDatabase database = FirebaseDatabase.getInstance();
-    private DatabaseReference myRef = database.getReference("HISTORY");
+    private DatabaseReference myRef = database.getReference(Authentication.useremail).child("HISTORY");
 
     MedicineAdapter adapter;
 
@@ -69,7 +69,8 @@ public class MedicineList extends AppCompatActivity {
                     data.add(new History(year, month, day, hour, min, check, name));
                     count++;
                 }
-                updateAdapter();
+                if(data.size()!=0)
+                    updateAdapter();
             }
 
             @Override

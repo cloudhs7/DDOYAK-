@@ -36,7 +36,7 @@ public class CalendarMainActivity extends AppCompatActivity{
     CheckingAdapter adapter;
 
     private FirebaseDatabase database = FirebaseDatabase.getInstance();
-    private DatabaseReference myRef = database.getReference("HISTORY");
+    private DatabaseReference myRef = database.getReference(Authentication.useremail).child("HISTORY");
 
     int curYear;
     int curMonth;
@@ -62,6 +62,9 @@ public class CalendarMainActivity extends AppCompatActivity{
         checkingView.setLayoutManager(layoutManager);
 
         adapter = new CheckingAdapter(getApplicationContext(), checkingData);
+        gridView = (GridView)findViewById(R.id.gridView);
+        gridAdapter = new GridAdapter(getApplicationContext(), R.layout.month_item);
+        gridView.setAdapter(gridAdapter);
 
         //data 모두 삭제
         data.clear();
@@ -92,17 +95,12 @@ public class CalendarMainActivity extends AppCompatActivity{
                 }
                 adapter.notifyDataSetChanged();
                 gridAdapter.notifyDataSetChanged();
-                gridView.setAdapter(gridAdapter);
             }
             @Override
             public void onCancelled(DatabaseError databaseError) {
 
             }
         });
-
-        gridView = (GridView)findViewById(R.id.gridView);
-        gridAdapter = new GridAdapter(getApplicationContext(), R.layout.month_item);
-        gridView.setAdapter(gridAdapter);
 
         //gridView item 클릭 시 실행
         gridView.setOnDataSelectionListener(new OnDataSelectionListener() {

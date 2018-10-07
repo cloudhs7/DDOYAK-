@@ -13,7 +13,7 @@
         android:roundIcon="@mipmap/ddoddo"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <!--<activity
+        <activity
             android:name=".SplashActivity"
             android:screenOrientation="portrait"
             android:theme="@style/SplashTheme">
@@ -22,8 +22,11 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>-->
-
+        </activity>
+        <activity android:name=".Authentication"/>
+        <activity android:name=".LoginActivity"/>
+        <activity android:name=".ProfileActivity"/>
+        <activity android:name=".FindActivity"/>
         <activity android:name=".HomeActivity"/>
         <activity android:name=".MedicineInfo" />
         <activity android:name=".AlarmSetting" />

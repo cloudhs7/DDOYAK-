@@ -20,7 +20,7 @@ public class RemoveItem extends AppCompatActivity{
     String scheduleName;
 
     FirebaseDatabase database = FirebaseDatabase.getInstance();
-    DatabaseReference myRef = database.getReference("OUTING");
+    DatabaseReference myRef = database.getReference(Authentication.useremail).child("OUTING");
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

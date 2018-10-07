@@ -32,7 +32,7 @@ public class ScheduleActivity extends AppCompatActivity {
     String scheduleTitle;
 
     FirebaseDatabase database = FirebaseDatabase.getInstance();
-    DatabaseReference myRef = database.getReference("OUTING");;
+    DatabaseReference myRef = database.getReference(Authentication.useremail).child("OUTING");
 
     public static ArrayList<ScheduleInfo> scheduleitems = new ArrayList<>();
 
@@ -68,7 +68,8 @@ public class ScheduleActivity extends AppCompatActivity {
                     changeViewData(titleData);
                     scheduleitems.add(new ScheduleInfo(dateTemp, startTemp, endTemp, scheduleTitle));       //어레이리스트에 저장
                 }
-                myAdapter.notifyDataSetChanged();                                      //어레이리스트에 저장한 items >> 어댑터 업데이트
+                if(scheduleitems.size()!=0)
+                    myAdapter.notifyDataSetChanged();                                      //어레이리스트에 저장한 items >> 어댑터 업데이트
             }
 
             @Override

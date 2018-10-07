@@ -18,7 +18,7 @@ import java.util.ArrayList;
 public class ListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     FirebaseDatabase database = FirebaseDatabase.getInstance();
-    DatabaseReference myRef = database.getReference("OUTING");
+    DatabaseReference myRef = database.getReference(Authentication.useremail).child("OUTING");
 
     //생성자. 표시할 데이터 전달 받음
     private ArrayList<ScheduleInfo> scheduleInfoArrayList;

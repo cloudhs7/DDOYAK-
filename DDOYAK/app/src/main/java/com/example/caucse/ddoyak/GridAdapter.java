@@ -194,16 +194,6 @@ public class GridAdapter extends BaseAdapter {
         nottaken_resID = context.getResources().getIdentifier(medicine_not_taken, "drawable", packName);
         packName = context.getPackageName();
 
-        //set circle image
-        ImageView takenimage = new ImageView(context);
-        takenimage.setImageResource(taken_resID);
-        takenimage.setAdjustViewBounds(true);
-
-        //set triangle image
-        ImageView nottakenimage = new ImageView(context);
-        nottakenimage.setImageResource(nottaken_resID);
-        nottakenimage.setAdjustViewBounds(true);
-
         linear1.removeAllViews();
 
         for (int i = 0; i < CalendarMainActivity.data.size(); i++) {
@@ -214,10 +204,22 @@ public class GridAdapter extends BaseAdapter {
                 if (Integer.parseInt(CalendarMainActivity.data.get(i).getCheck()) == 1){
                     //checkingValue가 1이면 linear1.addView를 통한 circle 이미지 띄우기
                     item.setCheckingValue(1);//복용
+
+                    //set circle image
+                    ImageView takenimage = new ImageView(context);
+                    takenimage.setImageResource(taken_resID);
+                    takenimage.setAdjustViewBounds(true);
+
                     linear1.addView(takenimage, 25, 25);}
                 else if (Integer.parseInt(CalendarMainActivity.data.get(i).getCheck()) == 0){
                     //checkingValue가 0이면 linear1.addView를 통한 triangle 이미지 띄우기
                     item.setCheckingValue(0);//미복용
+
+                    //set triangle image
+                    ImageView nottakenimage = new ImageView(context);
+                    nottakenimage.setImageResource(nottaken_resID);
+                    nottakenimage.setAdjustViewBounds(true);
+
                     linear1.addView(nottakenimage, 25, 25);}
                 else
                     item.setCheckingValue(2);

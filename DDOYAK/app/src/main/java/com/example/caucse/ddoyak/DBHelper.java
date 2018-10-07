@@ -11,7 +11,7 @@ import com.google.firebase.database.FirebaseDatabase;
 public class DBHelper extends SQLiteOpenHelper {
 
     private FirebaseDatabase database = FirebaseDatabase.getInstance();
-    private DatabaseReference MediRef = database.getReference("DOSE");
+    private DatabaseReference Database = database.getReference(Authentication.useremail).child("DOSE");
 
     //내부 DB의 필드명 지정
     private static final String KEY_ID = "id";
@@ -79,7 +79,7 @@ public class DBHelper extends SQLiteOpenHelper {
         int i=0;
         Cursor cursor = db.rawQuery("SELECT * FROM ALARMTIMES", null);
         while(cursor.moveToNext()){
-            MediRef.child(info).child(String.valueOf(i++)).setValue(cursor.getString(2));
+            Database.child(info).child(String.valueOf(i++)).setValue(cursor.getString(2));
         }
     }
 }

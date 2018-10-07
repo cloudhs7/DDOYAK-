@@ -10,13 +10,13 @@ import com.google.firebase.iid.FirebaseInstanceIdService;
 public class MyFirebaseInstanceIdService extends FirebaseInstanceIdService{
 
     private FirebaseDatabase database = FirebaseDatabase.getInstance();
-    private DatabaseReference myRef = database.getReference("TOKEN");
+    private DatabaseReference myRef = database.getReference(Authentication.useremail);
 
     @Override
         public void onTokenRefresh() {
             // Get updated InstanceID token.
             String refreshedToken = FirebaseInstanceId.getInstance().getToken();
-            myRef.setValue(refreshedToken);
+            myRef.child("TOKEN").setValue(refreshedToken);
 
             Log.d("TAG", "Refreshed token: " + refreshedToken);
              // If you want to send messages to this application instance or

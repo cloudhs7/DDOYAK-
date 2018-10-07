@@ -33,7 +33,7 @@ public class AddSchedule_Activity extends AppCompatActivity{
     String scheduleName, date, startTime, endTime;
 
     FirebaseDatabase database = FirebaseDatabase.getInstance();
-    DatabaseReference myRef = database.getReference("OUTING");
+    DatabaseReference myRef = database.getReference(Authentication.useremail).child("OUTING");
 
     //출력 형식 설정
     public SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy.MM.dd.E");
