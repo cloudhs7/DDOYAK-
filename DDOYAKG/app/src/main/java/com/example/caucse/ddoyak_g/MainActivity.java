@@ -11,8 +11,11 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.gun0912.tedpermission.PermissionListener;
 import com.gun0912.tedpermission.TedPermission;
 
@@ -32,8 +35,10 @@ public class MainActivity extends AppCompatActivity {
     ImageView title, yellowbar;
     ImageButton addButton;
 
+    String name, phone;
+
     FirebaseDatabase database = FirebaseDatabase.getInstance();
-    DatabaseReference myRef = database.getReference("INFO");
+    DatabaseReference myRef = database.getReference("MY_ID");
 
     public  static ArrayList<PatientInfo> patient_items = new ArrayList<>();
 
@@ -86,17 +91,30 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        /*
-         patient_items.clear();          //어레이리스트 초기화
+
+
         //firebase data 가져오기
         myRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                for(DataSnapshot outingData : dataSnapshot.getChildren()){                  //블럭 반복
-                    String titleData = outingData.getValue().toString();                     //한 블럭 전체 데이터를 한 문자열로 가져옴. ','를 토큰으로 나눠서 저장해야함.
 
-                    changeViewData(titleData);
-                    patient_items.add(new PatientInfo(name));       //어레이리스트에 저장
+                patient_items.clear();          //어레이리스트 초기화
+                for(DataSnapshot patientData : dataSnapshot.getChildren()){                  //블럭 반복
+                    String titleData = patientData.getValue().toString();                     //한 블럭 전체 데이터를 한 문자열로 가져옴. ','를 토큰으로 나눠서 저장해야함.
+
+                    DatabaseReference infoRef = database.getReference(titleData).child("INFO");
+                    infoRef.addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            String infoData = dataSnapshot.getValue().toString();
+                            changeViewData(infoData);
+                        }
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+                    });
+                    patient_items.add(new PatientInfo(name,phone));       //어레이리스트에 저장
                 }
                 myAdapter.notifyDataSetChanged();                                      //어레이리스트에 저장한 items >> 어댑터 업데이트
             }
@@ -106,8 +124,20 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
-        */
+
     }
+    private void changeViewData(String data){
+        try {
+            String[] arrayTemp = data.split(",");
+            int idx = arrayTemp[0].length();
+            arrayTemp[0] = arrayTemp[0].substring(1,idx);
+            idx = arrayTemp[1].length();
+            arrayTemp[1] = arrayTemp[1].substring(1,idx);
+            name = arrayTemp[0];
+            phone = arrayTemp[1];
+        }catch ( java.lang.ArrayIndexOutOfBoundsException e){
+            //예외 발생 무시(리스트 업데이트에 이상 없음)
+        }
 
-
+    }
 }
