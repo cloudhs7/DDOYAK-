@@ -29,6 +29,7 @@ public class AlarmSetting extends AppCompatActivity{
 
     AlarmManager alarmManager;
     Calendar calendar_time;
+    Calendar real_time;
 
     RecyclerView recyclerView;
     RecyclerView.LayoutManager layoutManager;
@@ -52,6 +53,7 @@ public class AlarmSetting extends AppCompatActivity{
 
         alarmManager = (AlarmManager)getSystemService(ALARM_SERVICE);
         calendar_time = Calendar.getInstance();
+        real_time = Calendar.getInstance();
 
         //recyclerView 초기화
         recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
@@ -127,30 +129,51 @@ public class AlarmSetting extends AppCompatActivity{
 
     void setAlarm() {
         Intent intent = new Intent(this,AlarmReceiver.class);
-        int N = Integer.parseInt(onedayNum);
         int M = Integer.parseInt(dayNum);
-
-        //알람 설정
-        PendingIntent[] servicePendings = new PendingIntent[100];
-        servicePendings[count+1]=PendingIntent.getBroadcast(AlarmSetting.this, count+1, intent, PendingIntent.FLAG_UPDATE_CURRENT );
-        alarmManager.set(AlarmManager.RTC_WAKEUP, calendar_time.getTimeInMillis(), servicePendings[count+1]);
+        int N = Integer.parseInt(onedayNum);
+        int dayOfMonth = calendar_time.get(Calendar.DAY_OF_MONTH);
 
         //알람 시간 띄워주기
         Toast.makeText(getBaseContext(),(num++)+"번째 알람 설정: "+ calendar_time.get(Calendar.HOUR_OF_DAY) +":" + calendar_time.get(Calendar.MINUTE),Toast.LENGTH_SHORT).show();
         DBHelper dbHelper = new DBHelper(getApplicationContext(), "DB.db",null,1);
 
-        int dayOfMonth = calendar_time.get(Calendar.DAY_OF_MONTH);
-        //한번 알람 설정 시 이후 n일치 data도 설정
-        for(int k=0;k<M;k++) {
-            calendar_time.set(Calendar.DAY_OF_MONTH,dayOfMonth++);
-            String time = simpleDateFormat.format(calendar_time.getTime());
-            dbHelper.update(info, time, sqlite_id + k * N);
+        //알람 설정
+        PendingIntent[] servicePendings = new PendingIntent[100];
+        servicePendings[count+1]=PendingIntent.getBroadcast(AlarmSetting.this, count+1, intent, PendingIntent.FLAG_UPDATE_CURRENT );
+
+        if((real_time.get(Calendar.HOUR_OF_DAY) >= calendar_time.get(Calendar.HOUR_OF_DAY)) && (real_time.get(Calendar.MINUTE) >= calendar_time.get(Calendar.MINUTE))){
+            calendar_time.set(Calendar.DAY_OF_MONTH, ++dayOfMonth); //내일것부터 울리게 할것.
+            alarmManager.set(AlarmManager.RTC_WAKEUP, calendar_time.getTimeInMillis(), servicePendings[count + 1]);
+
+            for(int k=0;k<M;k++) {
+                calendar_time.set(Calendar.DAY_OF_MONTH,dayOfMonth++);
+                String time = simpleDateFormat.format(calendar_time.getTime());
+                dbHelper.update(info, time, sqlite_id + k * N);
+            }
+
+            calendar_time.set(Calendar.DAY_OF_MONTH,--dayOfMonth);
         }
+        else
+        {
+            alarmManager.set(AlarmManager.RTC_WAKEUP, calendar_time.getTimeInMillis(), servicePendings[count + 1]);
+
+            //한번 알람 설정 시 이후 n일치 data도 설정
+            for(int k=0;k<M;k++) {
+                calendar_time.set(Calendar.DAY_OF_MONTH,dayOfMonth++);
+                String time = simpleDateFormat.format(calendar_time.getTime());
+                dbHelper.update(info, time, sqlite_id + k * N);
+            }
+        }
+
+
+
         //해당 날짜로 reset
         calendar_time.set(Calendar.DAY_OF_MONTH,dayOfMonth-M);
         sqlite_id++;
         count++;
     }
+
+
 
     //처음 복용 날짜로 calendar 설정
     DatePickerDialog.OnDateSetListener dateSetListener = new DatePickerDialog.OnDateSetListener() {
