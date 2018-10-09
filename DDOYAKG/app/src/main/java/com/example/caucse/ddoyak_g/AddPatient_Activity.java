@@ -35,7 +35,7 @@ public class AddPatient_Activity extends AppCompatActivity {
         setContentView(R.layout.activity_addpatient);
 
 
-        myId = database.getReference("MY_ID");
+        myId = database.getReference(Authentication.useremail);
 
         titleBar = findViewById(R.id.yellowbar);
         title = findViewById(R.id.title);
@@ -60,6 +60,16 @@ public class AddPatient_Activity extends AppCompatActivity {
                             String infoData = dataSnapshot.getValue().toString();
                             changeViewData(infoData);
 
+                            if(patientname.equals(tempname)) {
+                                myId.child(patientId).setValue(patientId);
+                                Toast.makeText(AddPatient_Activity.this, "등록",Toast.LENGTH_SHORT).show();
+                            } else{
+                                Toast.makeText(AddPatient_Activity.this, "정보를 잘못 입력되었습니다.", Toast.LENGTH_SHORT).show();
+                            }
+                            Intent intent = new Intent(getApplicationContext(),MainActivity.class);
+                            finish();
+                            startActivity(intent);              //액티비티 전환
+
                         }catch (NullPointerException e){
                             e.printStackTrace();
                         }
@@ -70,14 +80,6 @@ public class AddPatient_Activity extends AppCompatActivity {
                     }
                 });
 
-                if(patientname.equals(tempname)) {
-                    myId.child(patientId).setValue(patientId);
-                    Toast.makeText(AddPatient_Activity.this, "등록",Toast.LENGTH_SHORT).show();
-                    //MainActivity.patient_items.add(new PatientInfo(patientname,tempphone));          //해당 환자를 어레이리스트에 저장
-                }
-                Intent intent = new Intent(getApplicationContext(),MainActivity.class);
-                finish();
-                startActivity(intent);              //액티비티 전환
             }
         });
     }

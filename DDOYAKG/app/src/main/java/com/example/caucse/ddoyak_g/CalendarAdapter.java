@@ -164,16 +164,6 @@ public class CalendarAdapter extends BaseAdapter {
         nottaken_resID = mContext.getResources().getIdentifier(medicine_not_taken, "drawable", packName);
         packName = mContext.getPackageName();
 
-        //set circle image
-        ImageView takenimage = new ImageView(mContext);
-        takenimage.setImageResource(taken_resID);
-        takenimage.setAdjustViewBounds(true);
-
-        //set triangle image
-        ImageView nottakenimage = new ImageView(mContext);
-        nottakenimage.setImageResource(nottaken_resID);
-        nottakenimage.setAdjustViewBounds(true);
-
         linear1.removeAllViews();
 
         for (int i = 0; i < ShowPatientInfo.data.size(); i++) {
@@ -185,13 +175,25 @@ public class CalendarAdapter extends BaseAdapter {
                     //checkingValue가 1이면 linear1.addView를 통한 circle 이미지 띄우기
                     item.setCheckingValue(1);//복용
 
+                    //set circle image
+                    ImageView takenimage = new ImageView(mContext);
+                    takenimage.setImageResource(taken_resID);
+                    takenimage.setAdjustViewBounds(true);
+
                     linear1.addView(takenimage, 25, 25);}
                 else if (Integer.parseInt(ShowPatientInfo.data.get(i).getCheck()) == 0){
                     //checkingValue가 0이면 linear1.addView를 통한 triangle 이미지 띄우기
                     item.setCheckingValue(0);//미복용
+
+                    //set triangle image
+                    ImageView nottakenimage = new ImageView(mContext);
+                    nottakenimage.setImageResource(nottaken_resID);
+                    nottakenimage.setAdjustViewBounds(true);
+
                     linear1.addView(nottakenimage, 25, 25);}
-                else
+                else {
                     item.setCheckingValue(2);
+                }
             }
         }
     }

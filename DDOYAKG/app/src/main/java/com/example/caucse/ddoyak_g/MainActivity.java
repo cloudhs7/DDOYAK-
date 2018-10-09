@@ -3,6 +3,7 @@ package com.example.caucse.ddoyak_g;
 import android.Manifest;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.AnyThread;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -19,6 +20,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.gun0912.tedpermission.PermissionListener;
 import com.gun0912.tedpermission.TedPermission;
 
+import java.lang.reflect.AnnotatedElement;
 import java.util.ArrayList;
 
 /*
@@ -38,14 +40,18 @@ public class MainActivity extends AppCompatActivity {
     String name, phone;
 
     FirebaseDatabase database = FirebaseDatabase.getInstance();
-    DatabaseReference myRef = database.getReference("MY_ID");
+    DatabaseReference myRef = database.getReference(Authentication.useremail);
 
-    public  static ArrayList<PatientInfo> patient_items = new ArrayList<>();
+   public static ArrayList<PatientInfo> patient_items = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        //사용자의 토큰 값 업데이트
+        final MyFirebaseInstanceIdService fiid = new MyFirebaseInstanceIdService();
+        fiid.onTokenRefresh();
 
         //Permission Check
         //전화 기능 Permission 허가 받음 (앱 최초 실행시)
@@ -53,7 +59,7 @@ public class MainActivity extends AppCompatActivity {
         PermissionListener permissionlistener = new PermissionListener() {
             @Override
             public void onPermissionGranted() {
-                Toast.makeText(MainActivity.this, "Permission Granted", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(MainActivity.this, "Permission Granted", Toast.LENGTH_SHORT).show();
             }
             @Override
             public void onPermissionDenied(ArrayList<String> arrayList) {
@@ -76,6 +82,7 @@ public class MainActivity extends AppCompatActivity {
         patientList.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(this);
         patientList.setLayoutManager(layoutManager);
+
         //어댑터와 리사이클러뷰 연결
         final RecyclerAdapter myAdapter = new RecyclerAdapter(getApplicationContext(),patient_items);
         patientList.setAdapter(myAdapter);
@@ -91,32 +98,37 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-
+        patient_items.clear();
 
         //firebase data 가져오기
         myRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-
-                patient_items.clear();          //어레이리스트 초기화
                 for(DataSnapshot patientData : dataSnapshot.getChildren()){                  //블럭 반복
-                    String titleData = patientData.getValue().toString();                     //한 블럭 전체 데이터를 한 문자열로 가져옴. ','를 토큰으로 나눠서 저장해야함.
+                    final String titleData = patientData.getValue().toString();                     //한 블럭 전체 데이터를 한 문자열로 가져옴. ','를 토큰으로 나눠서 저장해야함.
 
                     DatabaseReference infoRef = database.getReference(titleData).child("INFO");
+
                     infoRef.addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             String infoData = dataSnapshot.getValue().toString();
                             changeViewData(infoData);
+                            patient_items.add(new PatientInfo(name,phone,titleData));
+
+                            Toast.makeText(MainActivity.this, patient_items.get(0).name, Toast.LENGTH_SHORT).show();
+
+                            myAdapter.notifyDataSetChanged();
+                            fiid.onTokenRefresh();
                         }
                         @Override
                         public void onCancelled(DatabaseError databaseError) {
 
                         }
                     });
-                    patient_items.add(new PatientInfo(name,phone));       //어레이리스트에 저장
                 }
                 myAdapter.notifyDataSetChanged();                                      //어레이리스트에 저장한 items >> 어댑터 업데이트
+                fiid.onTokenRefresh();
             }
 
             @Override
@@ -124,17 +136,16 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
-
     }
     private void changeViewData(String data){
         try {
             String[] arrayTemp = data.split(",");
             int idx = arrayTemp[0].length();
-            arrayTemp[0] = arrayTemp[0].substring(1,idx);
+            arrayTemp[0] = arrayTemp[0].substring(7,idx);
             idx = arrayTemp[1].length();
-            arrayTemp[1] = arrayTemp[1].substring(1,idx);
-            name = arrayTemp[0];
-            phone = arrayTemp[1];
+            arrayTemp[1] = arrayTemp[1].substring(6,idx-1);
+            phone = arrayTemp[0];
+            name = arrayTemp[1];
         }catch ( java.lang.ArrayIndexOutOfBoundsException e){
             //예외 발생 무시(리스트 업데이트에 이상 없음)
         }

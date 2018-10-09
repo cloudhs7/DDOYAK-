@@ -41,7 +41,7 @@ public class ShowPatientInfo extends AppCompatActivity {
     ArrayList<History> checkingData = new ArrayList<>();
 
     private FirebaseDatabase database = FirebaseDatabase.getInstance();
-    private DatabaseReference myRef = database.getReference("HISTORY");
+    private DatabaseReference myRef;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +55,8 @@ public class ShowPatientInfo extends AppCompatActivity {
         name.setText(intent.getStringExtra("patientname"));
         number.setText(intent.getStringExtra("patientphone"));
         final String thisNumber = intent.getStringExtra("patientphone");
+
+        myRef = database.getReference(name.getText().toString()).child("HISTORY");
 
         ImageButton callButton = (ImageButton)findViewById(R.id.callButton);
         callButton.setOnClickListener(new View.OnClickListener() {
@@ -101,7 +103,6 @@ public class ShowPatientInfo extends AppCompatActivity {
                 }
                 adapter.notifyDataSetChanged();
                 monthViewAdapter.notifyDataSetChanged();
-                monthView.setAdapter(monthViewAdapter);
             }
             @Override
             public void onCancelled(DatabaseError databaseError) {

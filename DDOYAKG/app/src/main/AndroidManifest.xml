@@ -19,6 +19,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".Authentication"/>
+        <activity android:name=".LoginActivity"/>
+        <activity android:name=".ProfileActivity"/>
+        <activity android:name=".FindActivity"/>
         <activity android:name=".MainActivity"/>
         <activity android:name=".AddPatient_Activity"/>
         <activity android:name=".ShowPatientInfo"/>

@@ -33,20 +33,20 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             name = view.findViewById(R.id.name);
 
             view.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Toast.makeText(sContext,"click "+patientInfoArrayList.get(getAdapterPosition()).getName(),Toast.LENGTH_SHORT).show();
-                    Intent intent = new Intent(v.getContext(),ShowPatientInfo.class);
-                    intent.addFlags(intent.FLAG_ACTIVITY_NEW_TASK);
-                    intent.putExtra("patientname",patientInfoArrayList.get(getAdapterPosition()).getName());
-                    intent.putExtra("patientphone",patientInfoArrayList.get(getAdapterPosition()).getPhoneNumber());
-                    try {
-                        ((Activity) sContext).finish();
-                    }catch (java.lang.ClassCastException e){
+                    @Override
+                    public void onClick(View v) {
+                        Toast.makeText(sContext,"click "+patientInfoArrayList.get(getAdapterPosition()).getName(),Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent(v.getContext(),ShowPatientInfo.class);
+                        intent.addFlags(intent.FLAG_ACTIVITY_NEW_TASK);
+                        intent.putExtra("patientname",patientInfoArrayList.get(getAdapterPosition()).getName());
+                        intent.putExtra("patientphone",patientInfoArrayList.get(getAdapterPosition()).getPhoneNumber());
+                        try {
+                            ((Activity) sContext).finish();
+                        }catch (java.lang.ClassCastException e){
 
+                        }
+                        sContext.startActivity(intent);
                     }
-                    sContext.startActivity(intent);
-                }
             });
 
         }
